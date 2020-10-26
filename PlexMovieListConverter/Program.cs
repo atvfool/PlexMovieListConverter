@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
+using PlexXMLConverter;
 
 namespace PlexMovieListConverter
 {
@@ -14,7 +15,7 @@ namespace PlexMovieListConverter
 
             MediaContainer container = new MediaContainer();
 
-            FileStream fs = new FileStream("plex movies.xml", FileMode.Open);
+            FileStream fs = new FileStream("C:\\tmp\\plex movies.xml", FileMode.Open);
             XmlReader reader = XmlReader.Create(fs);
 
             container = (MediaContainer)xmlSerializer.Deserialize(reader);
@@ -25,7 +26,7 @@ namespace PlexMovieListConverter
 
             using (StreamWriter sw = new StreamWriter("MovieList.txt"))
             {
-                foreach(Video video in container.video)
+                foreach(Video video in container.videos)
                 {
                     sw.WriteLine(video.title);
                 }
@@ -37,22 +38,5 @@ namespace PlexMovieListConverter
         }
     }
 
-    #region XML Classes
-    [Serializable]
-    [XmlRoot(ElementName ="MediaContainer")]
-    public class MediaContainer
-    {
-        [XmlAttribute("size")]
-        public int size { get; set; }
-        [XmlElement(ElementName ="Video")]
-        public List<Video> video { get; set; }
-    }
-
-    [Serializable]
-    public class Video
-    {
-        [XmlAttribute]
-        public string title { get; set; }
-    }
-    #endregion
+   
 }
