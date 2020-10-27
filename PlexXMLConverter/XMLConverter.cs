@@ -1,13 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace PlexXMLConverter
 {
     public class XMLConverter
     {
+        public void Convert(string inFile, string outFile)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(MediaContainer));
 
+            MediaContainer container = new MediaContainer();
+
+            FileStream fs = new FileStream(inFile, FileMode.Open);
+            XmlReader reader = XmlReader.Create(fs);
+
+            container = (MediaContainer)xmlSerializer.Deserialize(reader);
+            fs.Close();
+
+            Console.WriteLine(string.Format("Container size:{0}", container.size));
+            Console.WriteLine("Writing titles to file");
+
+            using (StreamWriter sw = new StreamWriter(outFile))
+            {
+                foreach (Video video in container.videos)
+                {
+                    sw.WriteLine(video.title);
+                }
+            }
+
+            Console.WriteLine("Finished");
+
+            Console.ReadLine();
+        }
     }
 
     #region XML Classes

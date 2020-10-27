@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PlexMovieListConverter": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\tmp\\data.xml\" \"C:\\tmp\\result.txt\""
+    }
+  }
+}
