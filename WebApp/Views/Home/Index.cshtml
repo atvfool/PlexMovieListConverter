@@ -4,5 +4,6 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>Used to convert XML from [LocalServerAddress]:[port number, usually 32400]/library/sections/[sectionID]/all (example: 192.168.1.2:32400/library/sections/1/all) from my plex server. To get different library sections go to [LocalServerAddress]:32400/library/sections/ and find the directory attribute for each directory tag. The purpose is to get your plex movie list from the XML format to a CSV format.</p>
+    @Html.ActionLink("Converter", "Converter", routeValues:new { }, htmlAttributes:new {@class="btn btn-primary" })
 </div>
