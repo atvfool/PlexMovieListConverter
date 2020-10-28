@@ -9,32 +9,51 @@ namespace PlexXMLConverter
 {
     public class XMLConverter
     {
-        public void Convert(string inFile, string outFile)
+        public MediaContainer MediaContainers;
+        public char chrDelimiter = ',';
+
+        public XMLConverter() { }
+        public XMLConverter(string xmlString)
+        {
+            Convert(xmlString);
+        }
+
+        public void Convert(string xmlString)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(MediaContainer));
 
-            MediaContainer container = new MediaContainer();
+            MediaContainers = new MediaContainer();
 
-            FileStream fs = new FileStream(inFile, FileMode.Open);
-            XmlReader reader = XmlReader.Create(fs);
-
-            container = (MediaContainer)xmlSerializer.Deserialize(reader);
-            fs.Close();
-
-            Console.WriteLine(string.Format("Container size:{0}", container.size));
-            Console.WriteLine("Writing titles to file");
-
-            using (StreamWriter sw = new StreamWriter(outFile))
+            using(TextReader tr = new StringReader(xmlString))
             {
-                foreach (Video video in container.videos)
-                {
-                    sw.WriteLine(video.title);
-                }
+                XmlReader reader = XmlReader.Create(tr);
+
+                MediaContainers = (MediaContainer)xmlSerializer.Deserialize(reader);
+            }
+        }
+
+        public string GetHeadersFromObject(object obj)
+        {
+            string result = string.Empty;
+
+            foreach(var prop in obj.GetType().GetProperties())
+            {
+                result += prop.Name + chrDelimiter;
             }
 
-            Console.WriteLine("Finished");
+            return result;
+        }
 
-            Console.ReadLine();
+        public string GetStringFromObject(object obj)
+        {
+            string result = string.Empty;
+
+            foreach (var prop in obj.GetType().GetProperties())
+            {
+                result += (prop.GetValue(obj, null) ?? string.Empty).ToString() + chrDelimiter;
+            }
+
+            return result;
         }
     }
 

@@ -15,6 +15,7 @@ namespace PlexMovieListConverter
             if(args.Contains("-h"))
             {
                 Console.WriteLine("USAGE: PlexMovieListConverter.exe [FileToConvert] [OutputFile]");
+                Console.WriteLine("This CLI only outputs the video objects");
             }
             else
             {
@@ -24,8 +25,29 @@ namespace PlexMovieListConverter
                 }
                 else
                 {
-                    XMLConverter converter = new XMLConverter();
-                    converter.Convert(args[0], args[1]);
+                    if(File.Exists(args[0]))
+                    {
+                        string xmlString = File.ReadAllText(args[0]);
+                        XMLConverter converter = new XMLConverter(xmlString);
+
+                        using (StreamWriter sw = new StreamWriter( args[1]))
+                        {
+                            sw.WriteLine(converter.GetHeadersFromObject(converter.MediaContainers.videos.First()));
+
+                            foreach(Video video in converter.MediaContainers.videos)
+                            {
+                                sw.WriteLine(converter.GetStringFromObject(video));
+                            }
+                        }
+
+                        Console.WriteLine("File Created");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Input file doesn't exist");
+                    }
+
+                    
                 }
                 
             }
