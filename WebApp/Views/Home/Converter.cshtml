@@ -3,7 +3,7 @@
     ViewData["Title"] = "Converter";
 }
 
-@using (Html.BeginForm("Export", "Home", FormMethod.Post))
+@using (Html.BeginForm("Export", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
 <div class="text-center">
     <div class="form-group">
@@ -63,6 +63,14 @@
             let selectedType = $(e.target).attr("aria-controls"); // newly activated tab
             $("#UploadType").val(selectedType);
         })
+
+        $("#FileUpload").change(function () {
+            var file = $(this)[0].files[0]
+            if (file) {
+                console.log(file.name);
+                $(".custom-file-label").html(file.name);
+            }
+        });
     });
 </script>
 

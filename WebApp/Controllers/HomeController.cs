@@ -34,7 +34,18 @@ namespace WebApp.Controllers
         {
             MemoryStream ms = new MemoryStream();
             byte[] fileBytes;
-            XMLConverter converter = new XMLConverter(model.XML);
+            XMLConverter converter;
+            
+            if (model.UploadType == "text")
+            {
+                converter = new XMLConverter(model.XML);
+            }
+            else
+            {
+                string xml = string.Empty;
+                xml = new StreamReader(model.FileUpload.OpenReadStream()).ReadToEnd();
+                converter = new XMLConverter(xml);
+            }
 
             string fileName = "export";
             string mimeType = "text/plain";
@@ -42,7 +53,7 @@ namespace WebApp.Controllers
             FileContentResult result;
             using (StreamWriter sw = new StreamWriter(ms))
             {
-                if (model.ConvertTo == "CSV")
+                if (model.ConvertTo == "csv")
                 {
                     sw.Write(converter.GetCSV());
                     fileName = "export.csv";
