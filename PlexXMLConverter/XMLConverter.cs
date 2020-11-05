@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace PlexXMLConverter
 {
@@ -18,6 +21,10 @@ namespace PlexXMLConverter
             Convert(xmlString);
         }
 
+        /// <summary>
+        /// Deserializes an xml string to MediaContainerClass
+        /// </summary>
+        /// <param name="xmlString"></param>
         public void Convert(string xmlString)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(MediaContainer));
@@ -32,7 +39,21 @@ namespace PlexXMLConverter
             }
         }
 
-        public string GetHeadersFromObject(object obj)
+        #region csv/delimited text stuff
+        public string GetCSV()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(GetDelimitedHeadersFromObject(MediaContainers.videos.First()));
+
+            foreach (Video video in MediaContainers.videos)
+            {
+                sb.AppendLine(GetDelimitedStringFromObject(video));
+            }
+
+            return sb.ToString();
+        }
+
+        private string GetDelimitedHeadersFromObject(object obj)
         {
             string result = string.Empty;
 
@@ -44,7 +65,7 @@ namespace PlexXMLConverter
             return result;
         }
 
-        public string GetStringFromObject(object obj)
+        private string GetDelimitedStringFromObject(object obj)
         {
             string result = string.Empty;
 
@@ -55,6 +76,18 @@ namespace PlexXMLConverter
 
             return result;
         }
+        #endregion
+
+        #region json stuff
+
+        public string GetJson()
+        {
+            string result = JsonConvert.SerializeObject(MediaContainers.videos);
+
+            return result;
+        }
+
+        #endregion
     }
 
     #region XML Classes

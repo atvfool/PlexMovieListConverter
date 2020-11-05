@@ -34,20 +34,44 @@ namespace WebApp.Controllers
         {
             MemoryStream ms = new MemoryStream();
             byte[] fileBytes;
-            XMLConverter converter = new XMLConverter(model.XML);
+            XMLConverter converter;
+            
+            if (model.UploadType == "text")
+            {
+                converter = new XMLConverter(model.XML);
+            }
+            else
+            {
+                string xml = string.Empty;
+                xml = new StreamReader(model.FileUpload.OpenReadStream()).ReadToEnd();
+                converter = new XMLConverter(xml);
+            }
 
+            string fileName = "export";
+            string mimeType = "text/plain";
+
+            FileContentResult result;
             using (StreamWriter sw = new StreamWriter(ms))
             {
-                sw.WriteLine(converter.GetHeadersFromObject(converter.MediaContainers.videos.First()));
-
-                foreach (Video video in converter.MediaContainers.videos)
+                if (model.ConvertTo == "csv")
                 {
-                    sw.WriteLine(converter.GetStringFromObject(video));
+                    sw.Write(converter.GetCSV());
+                    fileName = "export.csv";
+                    mimeType = "text/csv";
                 }
+                else
+                {
+                    sw.Write(converter.GetJson());
+                    fileName = "export.json";
+                    mimeType = "application/json";
+                }
+                
                 fileBytes = ms.GetBuffer();
             }
+
+            result = File(fileBytes, mimeType, fileName);
             
-            return File(fileBytes, "text/csv", "export.csv");
+            return result;
         }
 
         public IActionResult Privacy()
