@@ -36,18 +36,31 @@ namespace WebApp.Controllers
             byte[] fileBytes;
             XMLConverter converter = new XMLConverter(model.XML);
 
+            string fileName = "export";
+            string mimeType = "text/plain";
+
+            FileContentResult result;
             using (StreamWriter sw = new StreamWriter(ms))
             {
-                sw.WriteLine(converter.GetHeadersFromObject(converter.MediaContainers.videos.First()));
-
-                foreach (Video video in converter.MediaContainers.videos)
+                if (model.ConvertTo == "CSV")
                 {
-                    sw.WriteLine(converter.GetStringFromObject(video));
+                    sw.Write(converter.GetCSV());
+                    fileName = "export.csv";
+                    mimeType = "text/csv";
                 }
+                else
+                {
+                    sw.Write(converter.GetJson());
+                    fileName = "export.json";
+                    mimeType = "application/json";
+                }
+                
                 fileBytes = ms.GetBuffer();
             }
+
+            result = File(fileBytes, mimeType, fileName);
             
-            return File(fileBytes, "text/csv", "export.csv");
+            return result;
         }
 
         public IActionResult Privacy()

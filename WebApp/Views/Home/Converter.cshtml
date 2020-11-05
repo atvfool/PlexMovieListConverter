@@ -7,16 +7,63 @@
 {
 <div class="text-center">
     <div class="form-group">
-        <diiv class="row">
-            <label for="XML" class="col-md-2">XML To Convert</label>
-            @Html.TextAreaFor(m => m.XML, htmlAttributes: new { @class = "form-control col-md-10" })
-        </diiv>
 
-    </div>
+        <ul class="nav nav-pills">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="text-tab" data-toggle="tab" href="#text" role="tab" aria-controls="text" aria-selected="true">Text</a>    
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="upload-tab" data-toggle="tab" href="#upload" role="tab" aria-controls="upload" aria-selected="true">Upload</a>
+            </li>
+        </ul>
+        <br />
+        <div class="tab-content" id="TabContent">
+            <div class="tab-pane fade show active" id="text" role="tabpanel" aria-label="text-tab">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">XML To Convert</span>
+                    </div>
+                    <textarea id="XML" name="XML" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="upload" role="tabpanel" aria-label="text-upload">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="fileUploadAddon">Upload</span>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="FileUpload" name="FileUpload" aria-describedby="fileUploadAddon" />
+                        <label class="custom-file-label" for="FileUpload">Choose File</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text">Convert To</label>
+            </div>
+            <select id="ConvertTo" name="ConvertTo" class="custom-select">
+                <option selected value="csv">CSV</option>
+                <option value="json">JSON</option>
+            </select>
+        </div>
+
+        </div>
     <div class="form-group">
         <input type="submit" value="Convert" class="btn btn-primary" />
+        <input type="hidden" value="text" name="UploadType" id="UploadType" />
     </div>
 </div>
 }
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            let selectedType = $(e.target).attr("aria-controls"); // newly activated tab
+            $("#UploadType").val(selectedType);
+        })
+    });
+</script>
 
 
